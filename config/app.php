@@ -138,6 +138,11 @@ return [
         Illuminate\View\ViewServiceProvider::class,
 
         /*
+         * Third Party Service Providers..
+         */
+        moay\VirusTotalApi\VirusTotalApiServiceProvider::class,
+
+        /*
          * Application Service Providers...
          */
         Maester\Providers\AppServiceProvider::class,
