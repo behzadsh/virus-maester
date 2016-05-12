@@ -51,7 +51,7 @@ class ScanController extends Controller
 
         $response = VirusTotalApi::scanFileViaUrl($url);
 
-        dd($this->handleResponse($response, 'url'));
+        dd($response);
         return $this->handleResponse($response, 'url');
     }
 
