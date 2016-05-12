@@ -10,3 +10,5 @@ $router->get('/', function () {
 
 $router->post('/file', ['as' => 'file', 'uses' => 'ScanController@file']);
 $router->post('/url', ['as' => 'url', 'uses' => 'ScanController@url']);
+
+$router->get('/file/{scan_id}', 'ScanController@fileReport');

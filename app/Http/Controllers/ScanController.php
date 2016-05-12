@@ -17,11 +17,13 @@ class ScanController extends Controller
         $file = $file->move(storage_path("files"), "$fileHash.{$file->getClientOriginalExtension()}");
         $response = VirusTotalApi::scanFile($file->getPathname());
 
-        if ($report = $this->handleResponse($response, 'file')) {
-            dd($report);
-        }
+        return $this->handleResponse($response, 'file');
+    }
 
-        return view('errors.api_limits');
+    public function fileReport($scanId)
+    {
+        $fileApi = new File(env('VT_API_KEY'));
+        dd($fileApi->getReport($scanId));
     }
 
     public function url()
@@ -31,24 +33,19 @@ class ScanController extends Controller
     private function handleResponse($response, $type)
     {
         if ($response['success']) {
-            /** @var File|Url $virusTotal */
-            $virusTotal = $this->getApiClass($type);
+            $data = [
+                'message'   => $response['verbose_msg'],
+                'scan_id'   => $response['scan_id'],
+                'permalink' => $response['permalink'],
+                'type'      => $type
+            ];
 
-            return $virusTotal->getReport($response['scan_id']);
+            return view('queued_scan', $data);
         } elseif ($response['error'] == 'rate limit exceeded') {
-            return false;
-        }
-    }
-
-    private function getApiClass($type)
-    {
-        if ($type == 'file') {
-            return new File(env('VT_API_KEY'));
-        } elseif ($type == 'url') {
-            return new Url(env('VT_API_KEY'));
+            return view('errors.api_limits');
         }
 
-        throw new \Exception('invalid virus total driver type');
+        return view('errors.503');
     }
 
 }
