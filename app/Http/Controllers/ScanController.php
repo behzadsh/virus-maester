@@ -5,7 +5,6 @@ namespace Maester\Http\Controllers;
 use Maester\Http\Requests;
 use moay\VirusTotalApi\VirusTotalApi;
 use VirusTotal\File;
-use VirusTotal\Url;
 
 class ScanController extends Controller
 {
@@ -23,11 +22,25 @@ class ScanController extends Controller
     public function fileReport($scanId)
     {
         $fileApi = new File(env('VT_API_KEY'));
-        dd($fileApi->getReport($scanId));
+        $report = $fileApi->getReport($scanId);
+
+        $data = [
+            'defected' => $report['positives'] > 0,
+            'ratio'    => "{$report['positives']} / {$report['total']}",
+            'date'     => $report['scan_date'],
+            'scans'    => $report['scans']
+        ];
+
+        return view('results', $data);
     }
 
     public function url()
     {
+    }
+
+    public function urlReport()
+    {
+
     }
 
     private function handleResponse($response, $type)

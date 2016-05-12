@@ -15,32 +15,24 @@
                 padding: 0
             }
 
-            .container-fluid {
-                height: 100%;
-                display: table;
-                width: 100%;
-                padding: 0;
+            .container {
+                padding-top: 50px;
             }
 
-            .row-fluid {
-                height: 100%;
-                display: table-cell;
-                vertical-align: middle;
-            }
-
-            .centering {
-                float: none;
-                margin: 0 auto;
+            .panel-heading {
+                font-size: larger;
             }
         </style>
     </head>
     <body>
-        <div class="container-fluid">
-            <div class="row-fluid">
-                <div class="centering text-center">
-                    <h3>{{ $message }}</h3>
-                    <div class="panel panel-info">
-
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8 col-md-offset-2">
+                    <div class="panel panel-danger">
+                        <div class="panel-heading">API Limit</div>
+                        <div class="panel-body">
+                            <p><b>API limit reached.</b> Please try later.</p>
+                        </div>
                     </div>
                 </div>
             </div>
