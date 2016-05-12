@@ -44,7 +44,7 @@
                     <div class="panel panel-info">
                         <div class="panel-heading">Scan Results</div>
                         <div class="panel-body">
-                            <p><b>The requested file queued for scanning.</b> Click the button below to view the results.</p>
+                            <p>{{ $message }}</p>
                             <a href="{{ url("$type/$scan_id/") }}" class="btn btn-primary pull-right">View Results</a>
                         </div>
                     </div>
