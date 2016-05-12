@@ -5,6 +5,7 @@ namespace Maester\Http\Controllers;
 use Maester\Http\Requests;
 use moay\VirusTotalApi\VirusTotalApi;
 use VirusTotal\File;
+use VirusTotal\Url;
 
 class ScanController extends Controller
 {
@@ -44,20 +45,46 @@ class ScanController extends Controller
         return view('results', $data);
     }
 
-    public function url()
+    public function url(Requests\UrlScanRequest $request)
     {
+        $url = $request->get('url');
+
+        $response = VirusTotalApi::scanFileViaUrl($url);
+
+        dd($this->handleResponse($response, 'url'));
+        return $this->handleResponse($response, 'url');
     }
 
-    public function urlReport()
+    public function urlReport($scanId)
     {
+        $urlApi = new Url(env('VT_API_KEY'));
+        $report = $urlApi->getReport($scanId);
 
+        if ($report['response_code'] != 1) {
+            $data = [
+                'message'   => "<b>Url is still in the queue.</b> Wait a minute and click the button below to view the results.",
+                'scan_id'   => $report['scan_id'],
+                'type'      => 'url'
+            ];
+
+            return view('queued_scan', $data);
+        }
+
+        $data = [
+            'defected' => $report['positives'] > 0,
+            'ratio'    => "{$report['positives']} / {$report['total']}",
+            'date'     => $report['scan_date'],
+            'scans'    => $report['scans']
+        ];
+
+        return view('results', $data);
     }
 
     private function handleResponse($response, $type)
     {
         if ($response['success']) {
             $data = [
-                'message'   => "<b>The requested file queued for scanning.</b> This may take some times. Click the button below to view the results.",
+                'message'   => "<b>The requested $type queued for scanning.</b> This may take some times. Click the button below to view the results.",
                 'scan_id'   => $response['scan_id'],
                 'type'      => $type
             ];
