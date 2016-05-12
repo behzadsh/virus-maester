@@ -51,7 +51,6 @@ class ScanController extends Controller
 
         $response = VirusTotalApi::scanFileViaUrl($url);
 
-        dd($response);
         return $this->handleResponse($response, 'url');
     }
 
@@ -59,7 +58,7 @@ class ScanController extends Controller
     {
         $urlApi = new Url(env('VT_API_KEY'));
         $report = $urlApi->getReport($scanId);
-
+dd($report);
         if ($report['response_code'] != 1) {
             $data = [
                 'message'   => "<b>Url is still in the queue.</b> Wait a minute and click the button below to view the results.",
