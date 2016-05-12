@@ -34,11 +34,11 @@
                 padding-top: 25px;
             }
             
-            i.danger {
+            i.danger, div.danger {
                 color: #a94442;
             }
 
-            i.success {
+            i.success, div.success {
                 color: #3c763d;
             }
         </style>
@@ -71,28 +71,51 @@
 
             <div class="results">
                 <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <td>Antivirus</td>
-                            <td>Result</td>
-                            <td>Update</td>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($scans as $scanner => $results)
+                    @if($type == 'file')
+                        <thead>
                             <tr>
-                                <td>{{ $scanner }}</td>
-                                <td>
-                                    @if($results['detected'])
-                                        <i class="glyphicon glyphicon-remove-sign danger"></i>
-                                    @else
-                                        <i class="glyphicon glyphicon-ok-sign success"></i>
-                                    @endif
-                                </td>
-                                <td>{{ $results['update'] }}</td>
+                                <td>Antivirus</td>
+                                <td>Result</td>
+                                <td>Update</td>
                             </tr>
-                        @endforeach
-                    </tbody>
+                        </thead>
+                        <tbody>
+                            @foreach($scans as $scanner => $results)
+                                <tr>
+                                    <td>{{ $scanner }}</td>
+                                    <td>
+                                        @if($results['detected'])
+                                            <i class="glyphicon glyphicon-remove-sign danger"></i>
+                                        @else
+                                            <i class="glyphicon glyphicon-ok-sign success"></i>
+                                        @endif
+                                    </td>
+                                    <td>{{ $results['update'] }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    @else
+                        <thead>
+                            <tr>
+                                <td>Url Scanner</td>
+                                <td>Result</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($scans as $scanner => $results)
+                                <tr>
+                                    <td>{{ $scanner }}</td>
+                                    <td>
+                                        @if($results['detected'])
+                                            <div class="danger"><i class="glyphicon glyphicon-remove-sign"></i> Malicious site</div>
+                                        @else
+                                            <div class="success"><i class="glyphicon glyphicon-ok-sign"></i> Clean site</div>
+                                        @endif
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    @endif
                 </table>
             </div>
         </div>
