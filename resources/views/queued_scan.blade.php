@@ -15,10 +15,6 @@
                 padding: 0
             }
 
-            .container {
-                padding-top: 50px;
-            }
-
             .panel-heading {
                 font-size: larger;
             }

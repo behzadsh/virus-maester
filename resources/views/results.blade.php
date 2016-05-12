@@ -10,7 +10,6 @@
         <script src="{{ asset('js/main.js') }}"></script>
         <style>
             .frame {
-                margin-top: 50px;
                 border: 1px solid #ddd;
                 border-radius: 4px;
                 padding: 10px;
