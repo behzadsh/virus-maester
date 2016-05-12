@@ -1,0 +1,140 @@
+/********************************************************************/
+/*** MAIN ***/
+.panel.with-nav-tabs .panel-heading {
+    padding: 5px 5px 0 5px;
+}
+
+.panel.with-nav-tabs .nav-tabs {
+    border-bottom: none;
+}
+
+.panel.with-nav-tabs .nav-justified {
+    margin-bottom: -1px;
+}
+
+.inside-panel {
+    padding: 25px 20px;
+}
+
+.form-info {
+    font-size: large;
+    text-align: center;
+    margin-top: 10px;
+    color: darkslategray;
+}
+
+/********************************************************************/
+/*** PANEL ***/
+.with-nav-tabs.panel-info .nav-tabs > li > a,
+.with-nav-tabs.panel-info .nav-tabs > li > a:hover,
+.with-nav-tabs.panel-info .nav-tabs > li > a:focus {
+    color: #31708f;
+}
+
+.with-nav-tabs.panel-info .nav-tabs > .open > a,
+.with-nav-tabs.panel-info .nav-tabs > .open > a:hover,
+.with-nav-tabs.panel-info .nav-tabs > .open > a:focus,
+.with-nav-tabs.panel-info .nav-tabs > li > a:hover,
+.with-nav-tabs.panel-info .nav-tabs > li > a:focus {
+    color: #31708f;
+    background-color: #bce8f1;
+    border-color: transparent;
+}
+
+.with-nav-tabs.panel-info .nav-tabs > li.active > a,
+.with-nav-tabs.panel-info .nav-tabs > li.active > a:hover,
+.with-nav-tabs.panel-info .nav-tabs > li.active > a:focus {
+    color: #31708f;
+    background-color: #fff;
+    border-color: #bce8f1;
+    border-bottom-color: transparent;
+}
+
+.with-nav-tabs.panel-info .nav-tabs > li.dropdown .dropdown-menu {
+    background-color: #d9edf7;
+    border-color: #bce8f1;
+}
+
+.with-nav-tabs.panel-info .nav-tabs > li.dropdown .dropdown-menu > li > a {
+    color: #31708f;
+}
+
+.with-nav-tabs.panel-info .nav-tabs > li.dropdown .dropdown-menu > li > a:hover,
+.with-nav-tabs.panel-info .nav-tabs > li.dropdown .dropdown-menu > li > a:focus {
+    background-color: #bce8f1;
+}
+
+.with-nav-tabs.panel-info .nav-tabs > li.dropdown .dropdown-menu > .active > a,
+.with-nav-tabs.panel-info .nav-tabs > li.dropdown .dropdown-menu > .active > a:hover,
+.with-nav-tabs.panel-info .nav-tabs > li.dropdown .dropdown-menu > .active > a:focus {
+    color: #fff;
+    background-color: #31708f;
+}
+
+/********************************************************************/
+/*** FILE FORM ***/
+.notice {
+    padding-top: 5px;
+    color: darkgray;
+    text-align: center;
+    font-style: italic;
+    font-size: small;
+}
+
+.scanning-file-input {
+    position: relative;
+    overflow: hidden;
+    margin: 0px;
+}
+
+.scanning-file-input input[type=file] {
+    position: absolute;
+    width: 100%;
+    top: 0;
+    right: 0;
+    margin: 0;
+    padding: 0;
+    font-size: 20px;
+    cursor: pointer;
+    opacity: 0;
+    filter: alpha(opacity=0);
+}
+
+.scanning-file-input-title {
+    margin-left: 2px;
+}
+
+.submit-container {
+    padding-top: 30px;
+    text-align: center;
+}
+
+.btn-scan {
+    padding: 15px 40px;
+    font-weight: bold;
+}
+
+/********************************************************************/
+/*** URL FORM ***/
+/*.input-group {*/
+    /*margin: 20px auto;*/
+    /*width: 100%;*/
+/*}*/
+
+/*input.btn.btn-lg,*/
+/*input.btn.btn-lg:focus {*/
+    /*outline: none;*/
+    /*width: 60%;*/
+    /*height: 60px;*/
+    /*border-top-right-radius: 0;*/
+    /*border-bottom-right-radius: 0;*/
+/*}*/
+
+/*button.btn {*/
+    /*width: 40%;*/
+    /*height: 60px;*/
+    /*border-top-left-radius: 0;*/
+    /*border-bottom-left-radius: 0;*/
+/*}*/
+
+/********************************************************************/
