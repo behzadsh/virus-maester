@@ -13,7 +13,7 @@ class UrlScanRequest extends Request
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,7 @@ class UrlScanRequest extends Request
     public function rules()
     {
         return [
-            //
+            'url' => 'required'
         ];
     }
 }
