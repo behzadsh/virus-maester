@@ -1,16 +1,12 @@
 <?php
 
-/*
-|--------------------------------------------------------------------------
-| Application Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register all of the routes for an application.
-| It's a breeze. Simply tell Laravel the URIs it should respond to
-| and give it the controller to call when that URI is requested.
-|
-*/
+/** @var Router $router */
 
-Route::get('/', function () {
-    return view('welcome');
+use Illuminate\Routing\Router;
+
+$router->get('/', function () {
+    return view('home');
 });
+
+$router->post('/file', ['as' => 'file', 'uses' => 'ScanController@file']);
+$router->post('/url', ['as' => 'url', 'uses' => 'ScanController@url']);
