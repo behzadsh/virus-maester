@@ -39,7 +39,8 @@ class ScanController extends Controller
             'defected' => $report['positives'] > 0,
             'ratio'    => "{$report['positives']} / {$report['total']}",
             'date'     => $report['scan_date'],
-            'scans'    => $report['scans']
+            'scans'    => $report['scans'],
+            'type'     => 'file'
         ];
 
         return view('results', $data);
@@ -73,7 +74,8 @@ class ScanController extends Controller
             'defected' => $report['positives'] > 0,
             'ratio'    => "{$report['positives']} / {$report['total']}",
             'date'     => $report['scan_date'],
-            'scans'    => $report['scans']
+            'scans'    => $report['scans'],
+            'type'     => 'url'
         ];
 
         return view('results', $data);
