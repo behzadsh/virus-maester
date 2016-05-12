@@ -48,7 +48,7 @@ class Handler extends ExceptionHandler
         }
 
         if ($e instanceof RateLimitException) {
-            return view('errors.api_limits');
+            return response()->view('errors.api_limits');
         }
 
         return parent::render($request, $e);
