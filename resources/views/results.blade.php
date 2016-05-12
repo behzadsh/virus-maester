@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Laravel</title>
+        <title>Scan Results</title>
         <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
         <link rel="stylesheet" href="{{ asset('css/bootstrap-theme.min.css') }}">
         <link rel="stylesheet" href="{{ asset('css/main.css') }}">
@@ -44,6 +44,11 @@
         </style>
     </head>
     <body>
+        <div class="container">
+            <div class="page-header">
+                <h1>VirusMaester</h1>
+            </div>
+        </div>
         <div class="container">
             <div class="frame">
                 @if($defected == false)

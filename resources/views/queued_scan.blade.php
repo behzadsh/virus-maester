@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Laravel</title>
+        <title>Scan request sent</title>
         <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
         <link rel="stylesheet" href="{{ asset('css/bootstrap-theme.min.css') }}">
         <link rel="stylesheet" href="{{ asset('css/main.css') }}">
@@ -15,21 +15,8 @@
                 padding: 0
             }
 
-            .container-fluid {
-                height: 100%;
-                display: table;
-                width: 60%;
-                padding: 0;
-            }
-
             .container {
                 padding-top: 50px;
-            }
-
-            .row-fluid {
-                height: 100%;
-                display: table-cell;
-                vertical-align: middle;
             }
 
             .panel-heading {
@@ -38,6 +25,11 @@
         </style>
     </head>
     <body>
+        <div class="container">
+            <div class="page-header">
+                <h1>VirusMaester</h1>
+            </div>
+        </div>
         <div class="container">
             <div class="row">
                 <div class="col-md-8 col-md-offset-2">
