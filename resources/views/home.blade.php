@@ -1,4 +1,4 @@
-@include('master')
+@extends('master')
 
 @section('style')
 @endsection
