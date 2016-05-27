@@ -83,9 +83,9 @@
                         <td>{{ $scanner }}</td>
                         <td>
                             @if($results['detected'])
-                                <i class="glyphicon glyphicon-remove-sign danger"></i>
+                                <div class="danger"><i class="glyphicon glyphicon-remove-sign"></i> {{ $results['result'] }}</div>
                             @else
-                                <i class="glyphicon glyphicon-ok-sign success"></i>
+                                <div class="success"><i class="glyphicon glyphicon-ok-sign success"></i>  {{ $results['result'] }}</div>
                             @endif
                         </td>
                         <td>{{ date('Y-m-d', strtotime($results['update'])) }}</td>
