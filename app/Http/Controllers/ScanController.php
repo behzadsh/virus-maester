@@ -2,9 +2,10 @@
 
 namespace Maester\Http\Controllers;
 
+use Illuminate\Cache\CacheManager;
+use Illuminate\Contracts\Cache\Repository;
 use Maester\Http\Requests;
 use moay\VirusTotalApi\VirusTotalApi;
-use Predis\Client;
 use VirusTotal\File;
 use VirusTotal\Url;
 
@@ -12,13 +13,18 @@ class ScanController extends Controller
 {
 
     /**
-     * @var Client
+     * @var CacheManager|Repository
      */
-    protected $redis;
+    private $cache;
 
-    public function __construct(Client $redis)
+    /**
+     * ScanController constructor.
+     *
+     * @param CacheManager $cache
+     */
+    public function __construct(CacheManager $cache)
     {
-        $this->redis = $redis;
+        $this->cache = $cache;
     }
 
     public function file(Requests\FileScanRequest $request)
@@ -28,7 +34,7 @@ class ScanController extends Controller
         $fileHash = hash_file('sha256', $file);
         $extension = $file->getClientOriginalExtension();
 
-        $this->redis->hmset($fileHash, ['filename' => $filename, 'extension' => $extension]);
+        $this->cache->put($fileHash, ['filename' => $filename, 'extension' => $extension], 0);
 
         $file = $file->move(storage_path("files"), "$fileHash.$extension");
         $response = VirusTotalApi::scanFile($file->getPathname());
@@ -153,9 +159,9 @@ class ScanController extends Controller
     private function getFilename($scanId)
     {
         $fileHash = explode('-', $scanId, 2)[0];
-        $fileInfo = $this->redis->hgetall($fileHash);
+        $fileInfo = $this->cache->get($fileHash);
         unlink(storage_path("files"), "$fileHash.{$fileInfo['extension']}");
-        $this->redis->del($fileHash);
+        $this->cache->forget($fileHash);
         
         return $fileInfo['filename'];
     }
