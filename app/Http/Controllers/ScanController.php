@@ -160,7 +160,7 @@ class ScanController extends Controller
     {
         $fileHash = explode('-', $scanId, 2)[0];
         $fileInfo = $this->cache->get($fileHash);
-        unlink(storage_path("files"), "$fileHash.{$fileInfo['extension']}");
+        unlink(storage_path("files") . "/$fileHash.{$fileInfo['extension']}");
         $this->cache->forget($fileHash);
         
         return $fileInfo['filename'];
