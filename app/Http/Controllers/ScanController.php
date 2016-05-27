@@ -147,9 +147,9 @@ class ScanController extends Controller
     protected function renderResults($response)
     {
         if (isset($response['sha1']) || isset($response['sha256']) || isset($response['md5'])) {
-            $this->renderFileResults($response);
+            return $this->renderFileResults($response);
         } else {
-            $this->renderUrlResults($response);
+            return $this->renderUrlResults($response);
         }
     }
 
