@@ -5,7 +5,7 @@
 use Illuminate\Routing\Router;
 
 $router->get('/', function () {
-    return view('home');
+    return view('home', ['title' => 'VirusMaester']);
 });
 
 $router->post('/file', ['as' => 'file', 'uses' => 'ScanController@file']);

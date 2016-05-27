@@ -43,6 +43,7 @@ class ScanController extends Controller
 
         if ($report['response_code'] == 0) {
             $data = [
+                'title'     => 'VirusMaester - File Lost',
                 'message'   => "File is Lost. The requested file is neither analyzed nor in the queue.",
                 'scan_id'   => $report['scan_id'],
                 'type'      => 'file'
@@ -51,6 +52,7 @@ class ScanController extends Controller
             return view('queued_scan', $data);
         } elseif ($report['response_code'] != 1) {
             $data = [
+                'title'     => 'VirusMaester - Still Analyzing File',
                 'message'   => "File is still in the queue. Wait a minute and click the button below to view the results.",
                 'scan_id'   => $report['scan_id'],
                 'type'      => 'file'
@@ -60,6 +62,7 @@ class ScanController extends Controller
         }
 
         $data = [
+            'title'    => 'VirusMaester - File Scan Results',
             'defected' => $report['positives'] > 0,
             'filename' => $this->getFilename($scanId),
             'ratio'    => "{$report['positives']} / {$report['total']}",
@@ -79,6 +82,7 @@ class ScanController extends Controller
         if (isset($response['scans'])) {
 
             $data = [
+                'title'    => 'VirusMaester - URL Scan Results',
                 'defected' => $response['positives'] > 0,
                 'ratio'    => "{$response['positives']} / {$response['total']}",
                 'date'     => $response['scan_date'],
@@ -98,6 +102,7 @@ class ScanController extends Controller
 
         if ($report['response_code'] == 0) {
             $data = [
+                'title'     => 'VirusMaester - URL Lost',
                 'message'   => "Url is Lost. The requested file is neither analyzed nor in the queue.",
                 'scan_id'   => $report['scan_id'],
                 'type'      => 'url'
@@ -106,6 +111,7 @@ class ScanController extends Controller
             return view('queued_scan', $data);
         } elseif ($report['response_code'] != 1) {
             $data = [
+                'title'     => 'VirusMaester - Still Analyzing URL',
                 'message'   => "Url is still in the queue. Wait a minute and click the button below to view the results.",
                 'scan_id'   => $report['scan_id'],
                 'type'      => 'url'
@@ -115,6 +121,7 @@ class ScanController extends Controller
         }
 
         $data = [
+            'title'    => 'VirusMaester - URL Scan Results',
             'url'      => $report['url'],
             'defected' => $report['positives'] > 0,
             'ratio'    => "{$report['positives']} / {$report['total']}",
@@ -129,6 +136,7 @@ class ScanController extends Controller
     {
         if ($response['success']) {
             $data = [
+                'title'    => 'VirusMaester - Request Queued',
                 'message'   => "The requested $type queued for scanning. This may take some times. Click the button below to view the results.",
                 'scan_id'   => $response['scan_id'],
                 'type'      => $type
