@@ -91,7 +91,7 @@ class ScanController extends Controller
                 'title'    => 'VirusMaester - URL Scan Results',
                 'url'      => $response['url'],
                 'defected' => $response['positives'] > 0,
-                'ratio'    => "${response['positives']}$ / {response['total']}",
+                'ratio'    => "{$response['positives']} / {$response['total']}",
                 'date'     => $response['scan_date'],
                 'scans'    => $response['scans'],
             ];
