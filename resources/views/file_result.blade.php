@@ -88,7 +88,7 @@
                                 <i class="glyphicon glyphicon-ok-sign success"></i>
                             @endif
                         </td>
-                        <td>{{ $results['update'] }}</td>
+                        <td>{{ date('Y-m-d', strtotime($results['update'])) }}</td>
                     </tr>
                 @endforeach
             </tbody>
