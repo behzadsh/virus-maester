@@ -4,17 +4,33 @@ namespace Maester\Http\Controllers;
 
 use Maester\Http\Requests;
 use moay\VirusTotalApi\VirusTotalApi;
+use Predis\Client;
 use VirusTotal\File;
 use VirusTotal\Url;
 
 class ScanController extends Controller
 {
 
+    /**
+     * @var Client
+     */
+    protected $redis;
+
+    public function __construct(Client $redis)
+    {
+        $this->redis = $redis;
+    }
+
     public function file(Requests\FileScanRequest $request)
     {
         $file = $request->file('file');
+        $filename = $file->getClientOriginalName();
         $fileHash = hash_file('sha256', $file);
-        $file = $file->move(storage_path("files"), "$fileHash.{$file->getClientOriginalExtension()}");
+        $extension = $file->getClientOriginalExtension();
+
+        $this->redis->hmset($fileHash, ['filename' => $filename, 'extension' => $extension]);
+
+        $file = $file->move(storage_path("files"), "$fileHash.$extension");
         $response = VirusTotalApi::scanFile($file->getPathname());
 
         return $this->handleResponse($response, 'file');
@@ -25,9 +41,17 @@ class ScanController extends Controller
         $fileApi = new File(env('VT_API_KEY'));
         $report = $fileApi->getReport($scanId);
 
-        if ($report['response_code'] != 1) {
+        if ($report['response_code'] == 0) {
             $data = [
-                'message'   => "<b>File is still in the queue.</b> Wait a minute and click the button below to view the results.",
+                'message'   => "File is Lost. The requested file is neither analyzed nor in the queue.",
+                'scan_id'   => $report['scan_id'],
+                'type'      => 'file'
+            ];
+
+            return view('queued_scan', $data);
+        } elseif ($report['response_code'] != 1) {
+            $data = [
+                'message'   => "File is still in the queue. Wait a minute and click the button below to view the results.",
                 'scan_id'   => $report['scan_id'],
                 'type'      => 'file'
             ];
@@ -37,13 +61,13 @@ class ScanController extends Controller
 
         $data = [
             'defected' => $report['positives'] > 0,
+            'filename' => $this->getFilename($scanId),
             'ratio'    => "{$report['positives']} / {$report['total']}",
             'date'     => $report['scan_date'],
             'scans'    => $report['scans'],
-            'type'     => 'file'
         ];
 
-        return view('results', $data);
+        return view('file_result', $data);
     }
 
     public function url(Requests\UrlScanRequest $request)
@@ -51,6 +75,18 @@ class ScanController extends Controller
         $url = $request->get('url');
 
         $response = VirusTotalApi::scanFileViaUrl($url);
+
+        if (isset($response['scans'])) {
+
+            $data = [
+                'defected' => $response['positives'] > 0,
+                'ratio'    => "{$response['positives']} / {$response['total']}",
+                'date'     => $response['scan_date'],
+                'scans'    => $response['scans'],
+            ];
+
+            return view('url_results', $data);
+        }
 
         return $this->handleResponse($response, 'url');
     }
@@ -60,7 +96,15 @@ class ScanController extends Controller
         $urlApi = new Url(env('VT_API_KEY'));
         $report = $urlApi->getReport($scanId);
 
-        if ($report['response_code'] != 1) {
+        if ($report['response_code'] == 0) {
+            $data = [
+                'message'   => "Url is Lost. The requested file is neither analyzed nor in the queue.",
+                'scan_id'   => $report['scan_id'],
+                'type'      => 'url'
+            ];
+
+            return view('queued_scan', $data);
+        } elseif ($report['response_code'] != 1) {
             $data = [
                 'message'   => "Url is still in the queue. Wait a minute and click the button below to view the results.",
                 'scan_id'   => $report['scan_id'],
@@ -71,14 +115,14 @@ class ScanController extends Controller
         }
 
         $data = [
+            'url'      => $report['url'],
             'defected' => $report['positives'] > 0,
             'ratio'    => "{$report['positives']} / {$report['total']}",
             'date'     => $report['scan_date'],
             'scans'    => $report['scans'],
-            'type'     => 'url'
         ];
 
-        return view('results', $data);
+        return view('url_results', $data);
     }
 
     private function handleResponse($response, $type)
@@ -96,6 +140,16 @@ class ScanController extends Controller
         }
 
         return view('errors.503');
+    }
+
+    private function getFilename($scanId)
+    {
+        $fileHash = explode('-', $scanId, 2)[0];
+        $fileInfo = $this->redis->hgetall($fileHash);
+        unlink(storage_path("files"), "$fileHash.{$fileInfo['extension']}");
+        $this->redis->del($fileHash);
+        
+        return $fileInfo['filename'];
     }
 
 }
