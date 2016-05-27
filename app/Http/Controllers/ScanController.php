@@ -131,9 +131,9 @@ class ScanController extends Controller
         return view('errors.503');
     }
 
-    protected function getFilename($scanId)
+    protected function getFilename($response)
     {
-        $fileHash = explode('-', $scanId, 2)[0];
+        $fileHash = explode('-', $response['resource'], 2)[0];
         $fileInfo = $this->cache->get($fileHash);
         $filename = storage_path("files") . "/$fileHash.{$fileInfo['extension']}";
 
@@ -141,7 +141,7 @@ class ScanController extends Controller
             unlink($filename);
         }
 
-        return $fileInfo['filename'];
+        return $fileInfo['filename'] ?: 'N/A';
     }
 
     protected function renderResults($response)
@@ -159,7 +159,7 @@ class ScanController extends Controller
             'title'    => 'VirusMaester - File Scan Results',
             'defected' => $response['positives'] > 0,
             'sha256'   => $response['sha256'],
-            'filename' => $this->getFilename($response['resource']),
+            'filename' => $this->getFilename($response),
             'ratio'    => "{$response['positives']} / {$response['total']}",
             'date'     => $response['scan_date'],
             'scans'    => $response['scans'],
