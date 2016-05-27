@@ -40,12 +40,12 @@
         @if($defected == false)
             <div class="alert alert-success">
                 <i class="glyphicon glyphicon-ok-sign"></i>
-                <b>Probably harmless!</b> There are strong indicators suggesting that this file is safe to use.
+                <b>Probably harmless!</b> There are strong indicators suggesting that this url is safe to use.
             </div>
         @else
             <div class="alert alert-danger">
                 <i class="glyphicon glyphicon-remove-sign"></i>
-                <b>Harmful file!</b> There are strong indicators suggesting that this file is not safe to use.
+                <b>Harmful url!</b> There are strong indicators suggesting that this url is not safe to use.
             </div>
         @endif
         <table class="table-clean">
