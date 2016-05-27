@@ -9,7 +9,6 @@
         }
 
         .table-clean {
-            width: 50%;
             margin: 10px;
         }
 
@@ -52,15 +51,15 @@
         <table class="table-clean">
             <tr>
                 <td>Url:</td>
-                <td>{{ $url }}</td>
+                <td style="padding-left: 20px">{{ $url }}</td>
             </tr>
             <tr>
                 <td>Detection ratio:</td>
-                <td>{{ $ratio }}</td>
+                <td style="padding-left: 20px">{{ $ratio }}</td>
             </tr>
             <tr>
                 <td>Analysis date:</td>
-                <td>{{ $date }}</td>
+                <td style="padding-left: 20px">{{ $date }}</td>
             </tr>
         </table>
     </div>

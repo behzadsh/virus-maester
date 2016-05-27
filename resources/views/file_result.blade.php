@@ -9,7 +9,6 @@
         }
 
         .table-clean {
-            width: 50%;
             margin: 10px;
         }
 
@@ -52,19 +51,19 @@
         <table class="table-clean">
             <tr>
                 <td>SHA256:</td>
-                <td>{{ $sha256 }}</td>
+                <td style="padding-left: 20px">{{ $sha256 }}</td>
             </tr>
             <tr>
                 <td>File name:</td>
-                <td>{{ $filename }}</td>
+                <td style="padding-left: 20px">{{ $filename }}</td>
             </tr>
             <tr>
                 <td>Detection ratio:</td>
-                <td>{{ $ratio }}</td>
+                <td style="padding-left: 20px">{{ $ratio }}</td>
             </tr>
             <tr>
                 <td>Analysis date:</td>
-                <td>{{ $date }}</td>
+                <td style="padding-left: 20px">{{ $date }}</td>
             </tr>
         </table>
     </div>
