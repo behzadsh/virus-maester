@@ -87,11 +87,11 @@ class ScanController extends Controller
         $response = VirusTotalApi::scanFileViaUrl($url);
 
         if (isset($response['scans'])) {
-
             $data = [
                 'title'    => 'VirusMaester - URL Scan Results',
+                'url'      => $response['url'],
                 'defected' => $response['positives'] > 0,
-                'ratio'    => "{$response['positives']} / {$response['total']}",
+                'ratio'    => "${response['positives']}$ / {response['total']}",
                 'date'     => $response['scan_date'],
                 'scans'    => $response['scans'],
             ];
@@ -166,7 +166,7 @@ class ScanController extends Controller
         if(file_exists($filename)) {
             unlink($filename);
         }
-        
+
         return $fileInfo['filename'];
     }
 
