@@ -70,6 +70,7 @@ class ScanController extends Controller
         $data = [
             'title'    => 'VirusMaester - File Scan Results',
             'defected' => $report['positives'] > 0,
+            'sha256'   => $report['sha256'],
             'filename' => $this->getFilename($scanId),
             'ratio'    => "{$report['positives']} / {$report['total']}",
             'date'     => $report['scan_date'],
