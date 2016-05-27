@@ -15,7 +15,7 @@ class ScanController extends Controller
     /**
      * @var CacheManager|Repository
      */
-    private $cache;
+    protected $cache;
 
     /**
      * ScanController constructor.
@@ -47,37 +47,11 @@ class ScanController extends Controller
         $fileApi = new File(env('VT_API_KEY'));
         $report = $fileApi->getReport($scanId);
 
-        if ($report['response_code'] == 0) {
-            $data = [
-                'title'     => 'VirusMaester - File Lost',
-                'message'   => "File is Lost. The requested file is neither analyzed nor in the queue.",
-                'scan_id'   => $report['scan_id'],
-                'type'      => 'file'
-            ];
-
-            return view('queued_scan', $data);
-        } elseif ($report['response_code'] != 1) {
-            $data = [
-                'title'     => 'VirusMaester - Still Analyzing File',
-                'message'   => "File is still in the queue. Wait a minute and click the button below to view the results.",
-                'scan_id'   => $report['scan_id'],
-                'type'      => 'file'
-            ];
-
-            return view('queued_scan', $data);
+        if ($report['response_code'] != 1) {
+            return $this->renderStillInQueueFile($report);
         }
 
-        $data = [
-            'title'    => 'VirusMaester - File Scan Results',
-            'defected' => $report['positives'] > 0,
-            'sha256'   => $report['sha256'],
-            'filename' => $this->getFilename($scanId),
-            'ratio'    => "{$report['positives']} / {$report['total']}",
-            'date'     => $report['scan_date'],
-            'scans'    => $report['scans'],
-        ];
-
-        return view('file_result', $data);
+        return $this->renderFileResults($report);
     }
 
     public function url(Requests\UrlScanRequest $request)
@@ -87,16 +61,7 @@ class ScanController extends Controller
         $response = VirusTotalApi::scanFileViaUrl($url);
 
         if (isset($response['scans'])) {
-            $data = [
-                'title'    => 'VirusMaester - URL Scan Results',
-                'url'      => $response['url'],
-                'defected' => $response['positives'] > 0,
-                'ratio'    => "{$response['positives']} / {$response['total']}",
-                'date'     => $response['scan_date'],
-                'scans'    => $response['scans'],
-            ];
-
-            return view('url_results', $data);
+            return $this->renderResults($response);
         }
 
         return $this->handleResponse($response, 'url');
@@ -108,44 +73,53 @@ class ScanController extends Controller
         $report = $urlApi->getReport($scanId);
 
         if ($report['response_code'] == 0) {
-            $data = [
-                'title'     => 'VirusMaester - URL Lost',
-                'message'   => "Url is Lost. The requested file is neither analyzed nor in the queue.",
-                'scan_id'   => $report['scan_id'],
-                'type'      => 'url'
-            ];
-
-            return view('queued_scan', $data);
+            return $this->fileReport($scanId);
         } elseif ($report['response_code'] != 1) {
-            $data = [
-                'title'     => 'VirusMaester - Still Analyzing URL',
-                'message'   => "Url is still in the queue. Wait a minute and click the button below to view the results.",
-                'scan_id'   => $report['scan_id'],
-                'type'      => 'url'
-            ];
-
-            return view('queued_scan', $data);
+            return $this->renderStillInQueueUrl($report);
         }
 
-        $data = [
-            'title'    => 'VirusMaester - URL Scan Results',
-            'url'      => $report['url'],
-            'defected' => $report['positives'] > 0,
-            'ratio'    => "{$report['positives']} / {$report['total']}",
-            'date'     => $report['scan_date'],
-            'scans'    => $report['scans'],
-        ];
-
-        return view('url_results', $data);
+        return $this->renderUrlResults($report);
     }
 
-    private function handleResponse($response, $type)
+    /**
+     * @param $report
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    protected function renderStillInQueueFile($report)
+    {
+        $data = [
+            'title'   => 'VirusMaester - Still Analyzing File',
+            'message' => "File is still in the queue. Wait a minute and click the button below to view the results.",
+            'scan_id' => $report['resource'],
+            'type'    => 'file'
+        ];
+
+        return view('queued_scan', $data);
+    }
+
+    /**
+     * @param $report
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    protected function renderStillInQueueUrl($report)
+    {
+        $data = [
+            'title'   => 'VirusMaester - Still Analyzing URL',
+            'message' => "Url is still in the queue. Wait a minute and click the button below to view the results.",
+            'scan_id' => $report['resource'],
+            'type'    => 'url'
+        ];
+
+        return view('queued_scan', $data);
+    }
+
+    protected function handleResponse($response, $type)
     {
         if ($response['success']) {
             $data = [
                 'title'    => 'VirusMaester - Request Queued',
                 'message'   => "The requested $type queued for scanning. This may take some times. Click the button below to view the results.",
-                'scan_id'   => $response['scan_id'],
+                'scan_id'   => $response['resource'],
                 'type'      => $type
             ];
 
@@ -157,7 +131,7 @@ class ScanController extends Controller
         return view('errors.503');
     }
 
-    private function getFilename($scanId)
+    protected function getFilename($scanId)
     {
         $fileHash = explode('-', $scanId, 2)[0];
         $fileInfo = $this->cache->get($fileHash);
@@ -168,6 +142,44 @@ class ScanController extends Controller
         }
 
         return $fileInfo['filename'];
+    }
+
+    protected function renderResults($response)
+    {
+        if (isset($response['sha1']) || isset($response['sha256']) || isset($response['md5'])) {
+            $this->renderFileResults($response);
+        } else {
+            $this->renderUrlResults($response);
+        }
+    }
+
+    protected function renderFileResults($response)
+    {
+        $data = [
+            'title'    => 'VirusMaester - File Scan Results',
+            'defected' => $response['positives'] > 0,
+            'sha256'   => $response['sha256'],
+            'filename' => $this->getFilename($response['resource']),
+            'ratio'    => "{$response['positives']} / {$response['total']}",
+            'date'     => $response['scan_date'],
+            'scans'    => $response['scans'],
+        ];
+
+        return view('file_result', $data);
+    }
+
+    protected function renderUrlResults($response)
+    {
+        $data = [
+            'title'    => 'VirusMaester - URL Scan Results',
+            'url'      => $response['url'],
+            'defected' => $response['positives'] > 0,
+            'ratio'    => "{$response['positives']} / {$response['total']}",
+            'date'     => $response['scan_date'],
+            'scans'    => $response['scans'],
+        ];
+
+        return view('url_results', $data);
     }
 
 }
